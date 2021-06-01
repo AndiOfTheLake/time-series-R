@@ -11,6 +11,10 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r echo=FALSE}
+knitr::read_chunk('timeseries.R')
+```
+
 ```{r}
 # {r, echo = FALSE, results='hide'}
 # if we used both 'echo=TRUE' and 'results=hide' the pipe would not work properly
@@ -613,5 +617,281 @@ rw_drift <- cumsum(wn_drift)
 
 # Plot all four data objects
 plot.ts(cbind(white_noise, random_walk, wn_drift, rw_drift))
+```
+
+## Asset prices vs. asset returns
+
+```{r}
+# Plot eu_stocks
+plot(eu_stocks)
+
+# Use this code to convert prices to returns
+returns <- eu_stocks[-1,] / eu_stocks[-1860,] - 1
+
+# Convert returns to ts
+returns <- ts(returns, start = c(1991, 130), frequency = 260)
+
+# Plot returns
+plot(returns)
+
+# Use this code to convert prices to log returns
+logreturns <- diff(log(eu_stocks))
+
+# Plot logreturns
+plot(logreturns)
+```
+
+## Characteristics of financial time series
+
+```{r, eu_perc, echo=FALSE}
+```
+
+```{r, eval=FALSE}
+head(eu_percentreturns)
+
+# Generate means from eu_percentreturns
+colMeans(eu_percentreturns)
+
+# Use apply to calculate sample variance from eu_percentreturns
+apply(eu_percentreturns, MARGIN = 2, FUN = var)
+
+# Use apply to calculate standard deviation from eu_percentreturns
+apply(eu_percentreturns, MARGIN = 2, FUN = sd)
+
+# Display a histogram of percent returns for each index
+par(mfrow = c(2,2))
+apply(eu_percentreturns, MARGIN = 2, FUN = hist, main = "", xlab = "Percentage Return")
+
+# Display normal quantile plots of percent returns for each index
+par(mfrow = c(2,2))
+apply(eu_percentreturns, MARGIN = 2, FUN = qqnorm, main = "")
+qqline(eu_percentreturns)
+```
+
+## Plotting pairs of data
+
+```{r}
+DAX <- eu_stocks[, 1]
+FTSE <- eu_stocks[, 4]
+
+# Make a scatterplot of DAX and FTSE
+plot(DAX, FTSE)
+
+# Make a scatterplot matrix of eu_stocks
+pairs(eu_stocks)
+
+# Convert eu_stocks to log returns
+logreturns <- diff(log(eu_stocks))
+
+# Plot logreturns
+plot(logreturns)
+
+# Make a scatterplot matrix of logreturns
+pairs(logreturns)
+```
+
+## covariance and correlation
+
+```{r, eval=FALSE}
+# Use cov() with DAX_logreturns and FTSE_logreturns
+cov(DAX_logreturns, FTSE_logreturns)
+
+# Use cov() with logreturns
+cov(logreturns)
+
+# Use cor() with DAX_logreturns and FTSE_logreturns
+cor(DAX_logreturns, FTSE_logreturns)
+
+# Use cor() with logreturns
+cor(logreturns)
+```
+
+## Autocorrelation
+
+
+```{r, cal auto, echo=FALSE}
+```
+
+```{r}
+head(x)
+n <- length(x)
+n
+
+# Define x_t0 as x[-1]
+x_t0 <- x[-1]
+
+# Define x_t1 as x[-n]
+x_t1 <- x[-n]
+
+# Confirm that x_t0 and x_t1 are (x[t], x[t-1]) pairs  
+head(cbind(x_t0, x_t1))
+  
+# Plot x_t0 and x_t1
+plot(x_t0, x_t1)
+
+# View the correlation between x_t0 and x_t1
+cor(x_t0, x_t1)
+
+# Use acf with x
+acf(x, lag.max = 1, plot = FALSE)
+
+# Confirm that difference factor is (n-1)/n
+cor(x_t1, x_t0) * (n-1)/n
+```
+
+## The autocorrelation function
+
+```{r}
+# Generate ACF estimates for x up to lag-10
+acf(x, lag.max = 10, plot = FALSE)
+
+# Type the ACF estimate at lag-10 
+acf(x, lag.max = 10, plot = FALSE)[10]
+
+# Type the ACF estimate at lag-5
+acf(x, lag.max = 10, plot = FALSE)[5]
+```
+
+## Visualizing the autocorrelation function
+
+```{r}
+acf(x)
+```
+
+## The autoregressive model
+
+The autoregressive (AR) model is arguably the most widely used time series model. It shares the very familiar interpretation of a simple linear regression, but here each observation is regressed on the previous observation.
+
+$$
+Y_t - \mu = \phi(Y_{t-1} - \mu) + \epsilon_t
+$$
+
+where $\epsilon_t$ is zero mean white noise. This model has three parameters:
+
+- the mean $\mu$
+
+- the slope $\phi$
+
+- the white noise variance $\sigma^2$.
+
+Note that if 
+
+- $\phi =0$, then the model simplifies to a white noise process with mean $\mu$.
+
+- $\phi =1$ and $\mu = 0$, the model reduces to a random walk.
+
+## Simulate the autoregressive model
+
+```{r}
+# Simulate an AR model with 0.5 slope
+x <- arima.sim(model = list(ar = 0.5), n = 100)
+
+# Simulate an AR model with 0.9 slope
+y <- arima.sim(model = list(ar = 0.9), n = 100)
+
+# Simulate an AR model with -0.75 slope
+z <- arima.sim(model = list(ar = -0.75), n = 100)
+
+# Plot your simulated data
+plot.ts(cbind(x, y, z))
+```
+
+## Estimate the autocorrelation function (ACF) for an autoregression
+
+```{r}
+# Calculate the ACF for x
+acf(x)
+
+# Calculate the ACF for y
+acf(y)
+
+# Calculate the ACF for z
+acf(z)
+```
+
+## Compare the random walk (RW) and autoregressive (AR) models
+
+The random walk (RW) model is a special case of the autoregressive (AR) model, in which the slope parameter is equal to 1. Recall from previous chapters that the RW model is not stationary and exhibits very strong persistence. Its sample autocovariance function (ACF) also decays to zero very slowly, meaning past values have a long lasting impact on current values.
+
+The stationary AR model has a slope parameter between -1 and 1. The AR model exhibits higher persistence when its slope parameter is closer to 1, but the process reverts to its mean fairly quickly. Its sample ACF also decays to zero at a quick (geometric) rate, indicating that values far in the past have little impact on future values of the process.
+
+In this exercise, you'll explore these qualities by simulating and plotting additional data from an AR model.
+
+```{r}
+set.seed(61)
+
+# Simulate and plot AR model with slope 0.9 
+x <- arima.sim(model = list(ar = 0.9), n = 200)
+ts.plot(x)
+acf(x)
+
+# Simulate and plot AR model with slope 0.98
+y <- arima.sim(model = list(ar = 0.98), n = 200)
+ts.plot(y)
+acf(y)
+
+# Simulate and plot RW model
+z <- arima.sim(model = list(order = c(0, 1, 0)), n = 200)
+ts.plot(z)
+acf(z)
+```
+
+As you can see, the AR model represented by series y exhibits greater persistence than series x, but the ACF continues to decay to 0. By contrast, the RW model represented by series z shows considerable persistence and relatively little decay in the ACF.
+
+## AR model estimation and forecasting
+
+```{r, est AR mod, echo=FALSE}
+
+```
+
+
+```{r}
+set.seed(61)
+
+# Fit the AR model to x
+arima(x, order = c(1, 0, 0))
+
+# Copy and paste the slope (ar1) estimate
+
+
+# Copy and paste the slope mean (intercept) estimate
+
+
+# Copy and paste the innovation variance (sigma^2) estimate
+
+
+# Fit the AR model to AirPassengers
+AR <- arima(AirPassengers, order = c(1, 0, 0))
+print(AR)
+
+# Run the following commands to plot the series and fitted values
+ts.plot(AirPassengers)
+AR_fitted <- AirPassengers - residuals(AR)
+points(AR_fitted, type = "l", col = 2, lty = 2)
+```
+
+## Simple forecasts from an estimated AR model
+
+```{r}
+# Fit an AR model to Nile
+AR_fit <- arima(Nile, order  = c(1, 0, 0))
+print(AR_fit)
+
+# Use predict() to make a 1-step forecast
+predict_AR <- predict(AR_fit, n.ahead = 1)
+
+# Obtain the 1-step forecast using $pred[1]
+predict_AR$pred[1]
+
+# Use predict to make 1-step through 10-step forecasts
+predict(AR_fit, n.ahead = 10)
+
+# Run to plot the Nile series plus the forecast and 95% prediction intervals
+ts.plot(Nile, xlim = c(1871, 1980))
+AR_forecast <- predict(AR_fit, n.ahead = 10)$pred
+AR_forecast_se <- predict(AR_fit, n.ahead = 10)$se
+points(AR_forecast, type = "l", col = 2)
+points(AR_forecast - 2*AR_forecast_se, type = "l", col = 2, lty = 2)
+points(AR_forecast + 2*AR_forecast_se, type = "l", col = 2, lty = 2)
 ```
 

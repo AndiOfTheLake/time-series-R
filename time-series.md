@@ -10,6 +10,8 @@ output:
 
 
 
+
+
 ```r
 # {r, echo = FALSE, results='hide'}
 # if we used both 'echo=TRUE' and 'results=hide' the pipe would not work properly
@@ -102,21 +104,21 @@ tail(Nile, 12)
 plot(Nile)
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
 
 ```r
 # Plot the Nile data with xlab and ylab arguments
 plot(Nile, xlab = "Year", ylab = "River Volume (1e9 m^{3})")
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-3-2.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-4-2.png)<!-- -->
 
 ```r
 # Plot the Nile data with xlab, ylab, main, and type arguments
 plot(Nile, xlab = "Year", ylab = "River Volume (1e9 m^{3})", main = "Annual River Nile Volume at Aswan, 1871-1970", type = "b")
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-3-3.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-4-3.png)<!-- -->
 
 ## What does the time index tell us?
 
@@ -135,7 +137,7 @@ discrete_time_index <- seq(1:20)
 plot(discrete_time_index,continuous_series, type = "b")
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
 
 ## Sampling frequency
 
@@ -147,7 +149,7 @@ plot(discrete_time_index,continuous_series, type = "b")
 plot(AirPassengers)
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
 
 ```r
 # View the start and end dates of AirPassengers
@@ -248,7 +250,7 @@ Still working with the AirPassengers data, but now there are missing values.
 plot(AirPassengers)
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
 
 ```r
 # Compute the mean of AirPassengers
@@ -271,7 +273,7 @@ rm(AirPassengers)
 points(AirPassengers, type = "l", col = 2, lty = 3)
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-9-2.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-10-2.png)<!-- -->
 
 ## Basic time series objects
 
@@ -300,7 +302,7 @@ print(data_vector)
 plot(data_vector)
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
 
 ```r
 # Convert data_vector to a ts object with start = 2004 and frequency = 4
@@ -331,7 +333,7 @@ print(time_series)
 plot(time_series) 
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-11-2.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-12-2.png)<!-- -->
 
 ## Testing whether an object is a time series
 
@@ -389,7 +391,7 @@ frequency(eu_stocks)
 plot(eu_stocks)
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
 
 ```r
 # Use ts.plot with eu_stocks
@@ -399,7 +401,7 @@ ts.plot(eu_stocks, col = 1:4, xlab = "Year", ylab = "Index Value", main = "Major
 legend("topleft", colnames(eu_stocks), lty = 1, col = 1:4, bty = "n")
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-13-2.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-14-2.png)<!-- -->
 
 ## Removing trends in variability via the logarithmic transformation
 
@@ -414,7 +416,7 @@ linear_growth <-log(rapid_growth)
 ts.plot(linear_growth)
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
 
 ## Removing trends in level by differencing
 
@@ -429,7 +431,7 @@ dz <- diff(z)
 ts.plot(dz)
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-17-1.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-18-1.png)<!-- -->
 
 ```r
 # View the length of z and dz, respectively
@@ -461,7 +463,7 @@ dx <- diff(x, lag = 4)
 ts.plot(dx)  
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-19-1.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
 
 ```r
 # View the length of x and dx, respectively 
@@ -518,7 +520,7 @@ white_noise <- arima.sim(model = list(order = c(0, 0, 0)), n = 100)
 ts.plot(white_noise)
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-21-1.png)<!-- -->
 
 ```r
 # Simulate from the WN model with: mean = 100, sd = 10
@@ -528,11 +530,11 @@ white_noise_2 <- arima.sim(model = list(order = c(0, 0, 0)), n = 100, mean = 100
 ts.plot(white_noise_2)
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-20-2.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-21-2.png)<!-- -->
 
 ## Estimate the white noise model
 
-![](time-series_files/figure-html/unnamed-chunk-21-1.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-22-1.png)<!-- -->
 
 
 ```r
@@ -605,7 +607,7 @@ random_walk <- arima.sim(model = list(order = c(0, 1, 0)), n = 100)
 ts.plot(random_walk)
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-23-1.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-24-1.png)<!-- -->
 
 ```r
 # Calculate the first difference series
@@ -615,7 +617,7 @@ random_walk_diff <- diff(random_walk)
 ts.plot(random_walk_diff)  
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-23-2.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-24-2.png)<!-- -->
 
 ## Simulate the random walk model with a drift
 
@@ -628,7 +630,7 @@ rw_drift <- arima.sim(model = list(order = c(0, 1, 0)), n = 100, mean = 1)
 ts.plot(rw_drift)
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-24-1.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-25-1.png)<!-- -->
 
 ```r
 # Calculate the first difference series
@@ -638,7 +640,7 @@ rw_drift_diff <- diff(rw_drift)
 ts.plot(rw_drift_diff)
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-24-2.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-25-2.png)<!-- -->
 
 Once again, taking the first difference of your random walk data transformed it back into white noise data, regardless of the presence of your long-term drift.
 
@@ -655,7 +657,7 @@ rw_diff <- diff(random_walk)
 ts.plot(rw_diff)
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-26-1.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-27-1.png)<!-- -->
 
 ```r
 # Now fit the WN model to the differenced data
@@ -671,7 +673,7 @@ ts.plot(random_walk)
 abline(0, int_wn, col = "red")
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-26-2.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-27-2.png)<!-- -->
 
 The `arima()` command correctly identified the time trend in your original random-walk data.
 
@@ -711,5 +713,504 @@ rw_drift <- cumsum(wn_drift)
 plot.ts(cbind(white_noise, random_walk, wn_drift, rw_drift))
 ```
 
-![](time-series_files/figure-html/unnamed-chunk-27-1.png)<!-- -->
+![](time-series_files/figure-html/unnamed-chunk-28-1.png)<!-- -->
+
+## Asset prices vs. asset returns
+
+
+```r
+# Plot eu_stocks
+plot(eu_stocks)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-29-1.png)<!-- -->
+
+```r
+# Use this code to convert prices to returns
+returns <- eu_stocks[-1,] / eu_stocks[-1860,] - 1
+
+# Convert returns to ts
+returns <- ts(returns, start = c(1991, 130), frequency = 260)
+
+# Plot returns
+plot(returns)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-29-2.png)<!-- -->
+
+```r
+# Use this code to convert prices to log returns
+logreturns <- diff(log(eu_stocks))
+
+# Plot logreturns
+plot(logreturns)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-29-3.png)<!-- -->
+
+## Characteristics of financial time series
+
+
+
+
+```r
+head(eu_percentreturns)
+
+# Generate means from eu_percentreturns
+colMeans(eu_percentreturns)
+
+# Use apply to calculate sample variance from eu_percentreturns
+apply(eu_percentreturns, MARGIN = 2, FUN = var)
+
+# Use apply to calculate standard deviation from eu_percentreturns
+apply(eu_percentreturns, MARGIN = 2, FUN = sd)
+
+# Display a histogram of percent returns for each index
+par(mfrow = c(2,2))
+apply(eu_percentreturns, MARGIN = 2, FUN = hist, main = "", xlab = "Percentage Return")
+
+# Display normal quantile plots of percent returns for each index
+par(mfrow = c(2,2))
+apply(eu_percentreturns, MARGIN = 2, FUN = qqnorm, main = "")
+qqline(eu_percentreturns)
+```
+
+## Plotting pairs of data
+
+
+```r
+DAX <- eu_stocks[, 1]
+FTSE <- eu_stocks[, 4]
+
+# Make a scatterplot of DAX and FTSE
+plot(DAX, FTSE)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-31-1.png)<!-- -->
+
+```r
+# Make a scatterplot matrix of eu_stocks
+pairs(eu_stocks)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-31-2.png)<!-- -->
+
+```r
+# Convert eu_stocks to log returns
+logreturns <- diff(log(eu_stocks))
+
+# Plot logreturns
+plot(logreturns)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-31-3.png)<!-- -->
+
+```r
+# Make a scatterplot matrix of logreturns
+pairs(logreturns)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-31-4.png)<!-- -->
+
+## covariance and correlation
+
+
+```r
+# Use cov() with DAX_logreturns and FTSE_logreturns
+cov(DAX_logreturns, FTSE_logreturns)
+
+# Use cov() with logreturns
+cov(logreturns)
+
+# Use cor() with DAX_logreturns and FTSE_logreturns
+cor(DAX_logreturns, FTSE_logreturns)
+
+# Use cor() with logreturns
+cor(logreturns)
+```
+
+## Autocorrelation
+
+
+
+
+
+```r
+head(x)
+```
+
+```
+## [1]  2.0655438  1.2996380  0.0335780 -0.3425807  0.2325613  0.4681201
+```
+
+```r
+n <- length(x)
+n
+```
+
+```
+## [1] 150
+```
+
+```r
+# Define x_t0 as x[-1]
+x_t0 <- x[-1]
+
+# Define x_t1 as x[-n]
+x_t1 <- x[-n]
+
+# Confirm that x_t0 and x_t1 are (x[t], x[t-1]) pairs  
+head(cbind(x_t0, x_t1))
+```
+
+```
+##            x_t0       x_t1
+## [1,]  1.2996380  2.0655438
+## [2,]  0.0335780  1.2996380
+## [3,] -0.3425807  0.0335780
+## [4,]  0.2325613 -0.3425807
+## [5,]  0.4681201  0.2325613
+## [6,]  4.3411156  0.4681201
+```
+
+```r
+# Plot x_t0 and x_t1
+plot(x_t0, x_t1)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-33-1.png)<!-- -->
+
+```r
+# View the correlation between x_t0 and x_t1
+cor(x_t0, x_t1)
+```
+
+```
+## [1] 0.7630314
+```
+
+```r
+# Use acf with x
+acf(x, lag.max = 1, plot = FALSE)
+```
+
+```
+## 
+## Autocorrelations of series 'x', by lag
+## 
+##     0     1 
+## 1.000 0.758
+```
+
+```r
+# Confirm that difference factor is (n-1)/n
+cor(x_t1, x_t0) * (n-1)/n
+```
+
+```
+## [1] 0.7579445
+```
+
+## The autocorrelation function
+
+
+```r
+# Generate ACF estimates for x up to lag-10
+acf(x, lag.max = 10, plot = FALSE)
+```
+
+```
+## 
+## Autocorrelations of series 'x', by lag
+## 
+##     0     1     2     3     4     5     6     7     8     9    10 
+## 1.000 0.758 0.537 0.345 0.227 0.198 0.140 0.114 0.124 0.118 0.100
+```
+
+```r
+# Type the ACF estimate at lag-10 
+acf(x, lag.max = 10, plot = FALSE)[10]
+```
+
+```
+## 
+## Autocorrelations of series 'x', by lag
+## 
+##  10 
+## 0.1
+```
+
+```r
+# Type the ACF estimate at lag-5
+acf(x, lag.max = 10, plot = FALSE)[5]
+```
+
+```
+## 
+## Autocorrelations of series 'x', by lag
+## 
+##     5 
+## 0.198
+```
+
+## Visualizing the autocorrelation function
+
+
+```r
+acf(x)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-35-1.png)<!-- -->
+
+## The autoregressive model
+
+The autoregressive (AR) model is arguably the most widely used time series model. It shares the very familiar interpretation of a simple linear regression, but here each observation is regressed on the previous observation.
+
+$$
+Y_t - \mu = \phi(Y_{t-1} - \mu) + \epsilon_t
+$$
+
+where $\epsilon_t$ is zero mean white noise. This model has three parameters:
+
+- the mean $\mu$
+
+- the slope $\phi$
+
+- the white noise variance $\sigma^2$.
+
+Note that if 
+
+- $\phi =0$, then the model simplifies to a white noise process with mean $\mu$.
+
+- $\phi =1$ and $\mu = 0$, the model reduces to a random walk.
+
+## Simulate the autoregressive model
+
+
+```r
+# Simulate an AR model with 0.5 slope
+x <- arima.sim(model = list(ar = 0.5), n = 100)
+
+# Simulate an AR model with 0.9 slope
+y <- arima.sim(model = list(ar = 0.9), n = 100)
+
+# Simulate an AR model with -0.75 slope
+z <- arima.sim(model = list(ar = -0.75), n = 100)
+
+# Plot your simulated data
+plot.ts(cbind(x, y, z))
+```
+
+![](time-series_files/figure-html/unnamed-chunk-36-1.png)<!-- -->
+
+## Estimate the autocorrelation function (ACF) for an autoregression
+
+
+```r
+# Calculate the ACF for x
+acf(x)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-37-1.png)<!-- -->
+
+```r
+# Calculate the ACF for y
+acf(y)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-37-2.png)<!-- -->
+
+```r
+# Calculate the ACF for z
+acf(z)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-37-3.png)<!-- -->
+
+## Compare the random walk (RW) and autoregressive (AR) models
+
+The random walk (RW) model is a special case of the autoregressive (AR) model, in which the slope parameter is equal to 1. Recall from previous chapters that the RW model is not stationary and exhibits very strong persistence. Its sample autocovariance function (ACF) also decays to zero very slowly, meaning past values have a long lasting impact on current values.
+
+The stationary AR model has a slope parameter between -1 and 1. The AR model exhibits higher persistence when its slope parameter is closer to 1, but the process reverts to its mean fairly quickly. Its sample ACF also decays to zero at a quick (geometric) rate, indicating that values far in the past have little impact on future values of the process.
+
+In this exercise, you'll explore these qualities by simulating and plotting additional data from an AR model.
+
+
+```r
+set.seed(61)
+
+# Simulate and plot AR model with slope 0.9 
+x <- arima.sim(model = list(ar = 0.9), n = 200)
+ts.plot(x)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-38-1.png)<!-- -->
+
+```r
+acf(x)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-38-2.png)<!-- -->
+
+```r
+# Simulate and plot AR model with slope 0.98
+y <- arima.sim(model = list(ar = 0.98), n = 200)
+ts.plot(y)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-38-3.png)<!-- -->
+
+```r
+acf(y)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-38-4.png)<!-- -->
+
+```r
+# Simulate and plot RW model
+z <- arima.sim(model = list(order = c(0, 1, 0)), n = 200)
+ts.plot(z)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-38-5.png)<!-- -->
+
+```r
+acf(z)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-38-6.png)<!-- -->
+
+As you can see, the AR model represented by series y exhibits greater persistence than series x, but the ACF continues to decay to 0. By contrast, the RW model represented by series z shows considerable persistence and relatively little decay in the ACF.
+
+## AR model estimation and forecasting
+
+
+
+
+
+```r
+set.seed(61)
+
+# Fit the AR model to x
+arima(x, order = c(1, 0, 0))
+```
+
+```
+## 
+## Call:
+## arima(x = x, order = c(1, 0, 0))
+## 
+## Coefficients:
+##          ar1  intercept
+##       0.8575    -0.0948
+## s.e.  0.0491     0.6703
+## 
+## sigma^2 estimated as 1.022:  log likelihood = -143.66,  aic = 293.32
+```
+
+```r
+# Copy and paste the slope (ar1) estimate
+
+
+# Copy and paste the slope mean (intercept) estimate
+
+
+# Copy and paste the innovation variance (sigma^2) estimate
+
+
+# Fit the AR model to AirPassengers
+AR <- arima(AirPassengers, order = c(1, 0, 0))
+print(AR)
+```
+
+```
+## 
+## Call:
+## arima(x = AirPassengers, order = c(1, 0, 0))
+## 
+## Coefficients:
+##          ar1  intercept
+##       0.9646   278.4649
+## s.e.  0.0214    67.1141
+## 
+## sigma^2 estimated as 1119:  log likelihood = -711.09,  aic = 1428.18
+```
+
+```r
+# Run the following commands to plot the series and fitted values
+ts.plot(AirPassengers)
+AR_fitted <- AirPassengers - residuals(AR)
+points(AR_fitted, type = "l", col = 2, lty = 2)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-39-1.png)<!-- -->
+
+## Simple forecasts from an estimated AR model
+
+
+```r
+# Fit an AR model to Nile
+AR_fit <- arima(Nile, order  = c(1, 0, 0))
+print(AR_fit)
+```
+
+```
+## 
+## Call:
+## arima(x = Nile, order = c(1, 0, 0))
+## 
+## Coefficients:
+##          ar1  intercept
+##       0.5063   919.5685
+## s.e.  0.0867    29.1410
+## 
+## sigma^2 estimated as 21125:  log likelihood = -639.95,  aic = 1285.9
+```
+
+```r
+# Use predict() to make a 1-step forecast
+predict_AR <- predict(AR_fit, n.ahead = 1)
+
+# Obtain the 1-step forecast using $pred[1]
+predict_AR$pred[1]
+```
+
+```
+## [1] 828.6576
+```
+
+```r
+# Use predict to make 1-step through 10-step forecasts
+predict(AR_fit, n.ahead = 10)
+```
+
+```
+## $pred
+## Time Series:
+## Start = 1971 
+## End = 1980 
+## Frequency = 1 
+##  [1] 828.6576 873.5426 896.2668 907.7715 913.5960 916.5448 918.0377 918.7935
+##  [9] 919.1762 919.3699
+## 
+## $se
+## Time Series:
+## Start = 1971 
+## End = 1980 
+## Frequency = 1 
+##  [1] 145.3439 162.9092 167.1145 168.1754 168.4463 168.5156 168.5334 168.5380
+##  [9] 168.5391 168.5394
+```
+
+```r
+# Run to plot the Nile series plus the forecast and 95% prediction intervals
+ts.plot(Nile, xlim = c(1871, 1980))
+AR_forecast <- predict(AR_fit, n.ahead = 10)$pred
+AR_forecast_se <- predict(AR_fit, n.ahead = 10)$se
+points(AR_forecast, type = "l", col = 2)
+points(AR_forecast - 2*AR_forecast_se, type = "l", col = 2, lty = 2)
+points(AR_forecast + 2*AR_forecast_se, type = "l", col = 2, lty = 2)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-40-1.png)<!-- -->
 
