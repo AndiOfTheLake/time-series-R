@@ -401,4 +401,101 @@ legend("topleft", colnames(eu_stocks), lty = 1, col = 1:4, bty = "n")
 
 ![](time-series_files/figure-html/unnamed-chunk-13-2.png)<!-- -->
 
+## Removing trends in variability via the logarithmic transformation
+
+
+
+
+```r
+# Log rapid_growth
+linear_growth <-log(rapid_growth)
+  
+# Plot linear_growth using ts.plot()
+ts.plot(linear_growth)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
+
+## Removing trends in level by differencing
+
+
+
+
+```r
+# Generate the first difference of z
+dz <- diff(z)
+  
+# Plot dz
+ts.plot(dz)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-17-1.png)<!-- -->
+
+```r
+# View the length of z and dz, respectively
+length(z)
+```
+
+```
+## [1] 200
+```
+
+```r
+length(dz)
+```
+
+```
+## [1] 199
+```
+
+## Removing seasonal trends with seasonal differencing
+
+
+
+
+```r
+# Generate a diff of x with lag = 4. Save this to dx
+dx <- diff(x, lag = 4)
+  
+# Plot dx
+ts.plot(dx)  
+```
+
+![](time-series_files/figure-html/unnamed-chunk-19-1.png)<!-- -->
+
+```r
+# View the length of x and dx, respectively 
+length(x)
+```
+
+```
+## [1] 100
+```
+
+```r
+length(dx)
+```
+
+```
+## [1] 96
+```
+
+```r
+# compare
+head(x, 8)
+```
+
+```
+## [1]  -4.198033   9.569009   5.175143  -9.691646  -3.215294  10.843669   6.452159
+## [8] -10.833559
+```
+
+```r
+head(dx, 8)
+```
+
+```
+## [1]  0.9827398  1.2746603  1.2770153 -1.1419127  0.9799428 -0.7238363  0.1274871
+## [8]  2.1769943
+```
 
