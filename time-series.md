@@ -481,7 +481,7 @@ length(dx)
 ```
 
 ```r
-# compare
+# observe
 head(x, 8)
 ```
 
@@ -498,4 +498,218 @@ head(dx, 8)
 ## [1]  0.9827398  1.2746603  1.2770153 -1.1419127  0.9799428 -0.7238363  0.1274871
 ## [8]  2.1769943
 ```
+
+## Simulate the white noise model
+
+An ARIMA(p, d, q) model has three parts: 
+
+- p: the autoregressive order, 
+
+- d: the order of integration (or differencing) 
+
+- q: the moving average order
+
+
+```r
+# Simulate a WN model with list(order = c(0, 0, 0))
+white_noise <- arima.sim(model = list(order = c(0, 0, 0)), n = 100)
+
+# Plot your white_noise data
+ts.plot(white_noise)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
+
+```r
+# Simulate from the WN model with: mean = 100, sd = 10
+white_noise_2 <- arima.sim(model = list(order = c(0, 0, 0)), n = 100, mean = 100, sd = 10)
+
+# Plot your white_noise_2 data
+ts.plot(white_noise_2)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-20-2.png)<!-- -->
+
+## Estimate the white noise model
+
+![](time-series_files/figure-html/unnamed-chunk-21-1.png)<!-- -->
+
+
+```r
+# Fit the WN model to y using the arima command
+arima(y, order = c(0, 0, 0))
+```
+
+```
+## 
+## Call:
+## arima(x = y, order = c(0, 0, 0))
+## 
+## Coefficients:
+##       intercept
+##         97.5428
+## s.e.     0.9697
+## 
+## sigma^2 estimated as 94.03:  log likelihood = -369.08,  aic = 742.15
+```
+
+```r
+# Calculate the sample mean and sample variance of y and compare with the previous output
+mean(y)
+```
+
+```
+## [1] 97.54284
+```
+
+```r
+var(y)
+```
+
+```
+## [1] 94.98175
+```
+
+```r
+# The means are identical, the variances are close.
+```
+
+## The random walk (RW) model
+
+$$
+Y_t = Y_{t-1} + \epsilon_t,
+$$
+where $\epsilon_t$ is mean zero white noise.
+
+- has only one parameter $\sigma_{\epsilon}^2$
+
+- Simulation requires an initial point $Y_0$.
+
+## Random walk with drift
+
+$$
+Y_t = c + Y_{t-1} + \epsilon_t,
+$$
+where $\epsilon_t$ is mean zero white noise.
+
+- has two parameters, drift constant $c$ and $\sigma_{\epsilon}^2$
+
+## Simulate the random walk model
+
+
+```r
+# Generate a RW model using arima.sim
+random_walk <- arima.sim(model = list(order = c(0, 1, 0)), n = 100)
+
+# Plot random_walk
+ts.plot(random_walk)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-23-1.png)<!-- -->
+
+```r
+# Calculate the first difference series
+random_walk_diff <- diff(random_walk)
+
+# Plot random_walk_diff
+ts.plot(random_walk_diff)  
+```
+
+![](time-series_files/figure-html/unnamed-chunk-23-2.png)<!-- -->
+
+## Simulate the random walk model with a drift
+
+
+```r
+# Generate a RW model with a drift uing arima.sim
+rw_drift <- arima.sim(model = list(order = c(0, 1, 0)), n = 100, mean = 1)
+
+# Plot rw_drift
+ts.plot(rw_drift)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-24-1.png)<!-- -->
+
+```r
+# Calculate the first difference series
+rw_drift_diff <- diff(rw_drift)
+
+# Plot rw_drift_diff
+ts.plot(rw_drift_diff)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-24-2.png)<!-- -->
+
+Once again, taking the first difference of your random walk data transformed it back into white noise data, regardless of the presence of your long-term drift.
+
+## Estimate the random walk model
+
+
+
+
+```r
+# Difference your random_walk data
+rw_diff <- diff(random_walk)
+
+# Plot rw_diff
+ts.plot(rw_diff)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-26-1.png)<!-- -->
+
+```r
+# Now fit the WN model to the differenced data
+model_wn <- arima(rw_diff, order = c(0, 0, 0))
+
+# Store the value of the estimated time trend (intercept)
+int_wn <- model_wn$coef
+
+# Plot the original random_walk data
+ts.plot(random_walk)
+
+# Use abline(0, ...) to add time trend to the figure
+abline(0, int_wn, col = "red")
+```
+
+![](time-series_files/figure-html/unnamed-chunk-26-2.png)<!-- -->
+
+The `arima()` command correctly identified the time trend in your original random-walk data.
+
+## Stationary Processes
+
+Constant mean and variance across time. 
+
+Weakly stationary:
+
+$$
+Cov[Y_t, Y_s] = Cov[Y_i,Y_j]
+$$
+
+for all $t,s,i,j$ such that $|t-s| = |i -j|$.
+
+## Are the white noise model or the random walk model stationary?
+
+The white noise (WN) and random walk (RW) models are very closely related. However, only the RW is always non-stationary, both with and without a drift term. This is a simulation exercise to highlight the differences.
+
+
+```r
+set.seed(61)
+
+# Use arima.sim() to generate WN data
+white_noise <- arima.sim(model = list(order = c(0, 0, 0)), n =100)
+
+# Use cumsum() to convert your WN data to RW
+random_walk <- cumsum(white_noise)
+  
+# Use arima.sim() to generate WN drift data
+wn_drift <- arima.sim(model = list(order = c(0, 0, 0)), n =100, mean = 0.4)
+  
+# Use cumsum() to convert your WN drift data to RW
+rw_drift <- cumsum(wn_drift)
+
+# Plot all four data objects
+plot.ts(cbind(white_noise, random_walk, wn_drift, rw_drift))
+```
+
+![](time-series_files/figure-html/unnamed-chunk-27-1.png)<!-- -->
 
