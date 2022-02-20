@@ -1,7 +1,7 @@
 ---
 title: "Time Series Analysis in R"
 author: "Andi"
-Last updated: "01 June, 2021"
+Last updated: "20 February, 2022"
 output: 
   html_document: 
     keep_md: yes
@@ -1213,4 +1213,159 @@ points(AR_forecast + 2*AR_forecast_se, type = "l", col = 2, lty = 2)
 ```
 
 ![](time-series_files/figure-html/unnamed-chunk-40-1.png)<!-- -->
+
+## Simulate the simple moving average model
+
+The simple moving average (MA) model is a parsimonious time series model used to account for very short-run autocorrelation. It does have a regression like form, but here each observation is regressed on the previous innovation, which is not actually observed. Like the autoregressive (AR) model, the MA model includes the white noise (WN) model as special case.
+
+As with previous models, the MA model can be simulated using the arima.sim() command by setting the model argument to list(ma = theta), where theta is a slope parameter from the interval (-1, 1). Once again, you also need to specify the series length using the n argument.
+
+In this exercise, you'll simulate and plot three MA models with slope parameters 0.5, 0.9, and -0.5, respectively.
+
+Instructions:
+
+- Use arima.sim() to simulate a MA model with the slope parameter set to 0.5, and series length 100. Save this model to x.
+- Use another call to arima.sim() to simulate a MA model with the slope parameter set to 0.9. Save this model to y.
+- Use a third call to arima.sim() to simulate a final MA model with the slope parameter set to -0.5. Save this model to z.
+- Use plot.ts() to display all three models.
+
+
+```r
+set.seed(0220)
+
+# Generate MA model with slope 0.5
+x <- arima.sim(model = list(ma = 0.5), n = 100)
+
+# Generate MA model with slope 0.9
+y <- arima.sim(model = list(ma = 0.9), n = 100)
+
+# Generate MA model with slope -0.5
+z <- arima.sim(model = list(ma = -0.5), n = 100)
+
+# Plot all three models together
+plot.ts(cbind(x, y, z))
+```
+
+![](time-series_files/figure-html/unnamed-chunk-41-1.png)<!-- -->
+
+Great job! Note that there is some very short-run persistence for the positive slope values (x and y), and the series has a tendency to alternate when the slope value is negative (z).
+
+## Estimate the autocorrelation function (ACF) for a moving average
+
+Now that you've simulated some MA data using the arima.sim() command, you may want to estimate the autocorrelation functions (ACF) for your data. As in the previous chapter, you can use the acf() command to generate plots of the autocorrelation in your MA data.
+
+In this exercise, you'll use acf() to estimate the ACF for three simulated MA series, x, y, and z. These series have slope parameters of 0.4, 0.9, and -0.75, respectively, and are shown in the figure on the right.
+
+
+```r
+# Calculate ACF for x
+acf(x)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-42-1.png)<!-- -->
+
+```r
+# Calculate ACF for y
+acf(y)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-42-2.png)<!-- -->
+
+```r
+# Calculate ACF for z
+acf(z)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-42-3.png)<!-- -->
+
+Well done! As you can see from your ACF plots, the series x has positive sample autocorrelation at the first lag, but it is approximately zero at other lags. The series y has a larger sample autocorrelation at its first lag, but it is also approximately zero for the others. The series z has an alternating pattern, and its sample autocorrelation is negative at the first lag. However, similar to the others, it is approximately zero for all higher lags.
+
+## Estimate the simple moving average model
+
+Now that you've simulated some MA models and calculated the ACF from these models, your next step is to fit the simple moving average (MA) model to some data using the arima() command. For a given time series x we can fit the simple moving average (MA) model using arima(..., order = c(0, 0, 1)). Note for reference that an MA model is an ARIMA(0, 0, 1) model.
+
+In this exercise, you'll practice using a preloaded time series (x, shown in the plot on the right) as well as the Nile dataset used in earlier chapters.
+
+
+
+- Use arima() to fit the MA model to the series x.
+- What are the slope (ma1), mean (intercept), and innovation variance (sigma^2) estimates produced by your arima() output? Paste these into your workspace.
+- Use a similar call to arima() to fit the MA model to the Nile data. Save the results as MA and use print() to display the output.
+- Finally, use the pre-written commands to plot the Nile data and your fitted MA values.
+
+
+```r
+# Fit the MA model to x
+arima(x, order = c(0, 0, 1))
+```
+
+```
+## 
+## Call:
+## arima(x = x, order = c(0, 0, 1))
+## 
+## Coefficients:
+##          ma1  intercept
+##       0.7928     0.1589
+## s.e.  0.0902     0.1747
+## 
+## sigma^2 estimated as 0.9576:  log likelihood = -140.22,  aic = 286.44
+```
+
+```r
+# Paste the slope (ma1) estimate below
+arima(x, order = c(0, 0, 1))[["coef"]][1]
+```
+
+```
+##       ma1 
+## 0.7927576
+```
+
+```r
+# Paste the slope mean (intercept) estimate below
+arima(x, order = c(0, 0, 1))[["coef"]][2]
+```
+
+```
+## intercept 
+## 0.1589291
+```
+
+```r
+# Paste the innovation variance (sigma^2) estimate below
+arima(x, order = c(0, 0, 1))[["sigma2"]]
+```
+
+```
+## [1] 0.9575542
+```
+
+```r
+# Fit the MA model to Nile
+MA <- arima(Nile, order = c(0, 0, 1))
+print(MA)
+```
+
+```
+## 
+## Call:
+## arima(x = Nile, order = c(0, 0, 1))
+## 
+## Coefficients:
+##          ma1  intercept
+##       0.3783   919.2433
+## s.e.  0.0791    20.9685
+## 
+## sigma^2 estimated as 23272:  log likelihood = -644.72,  aic = 1295.44
+```
+
+```r
+# Plot Nile and MA_fit 
+ts.plot(Nile)
+MA_fit <- Nile - resid(MA)
+points(MA_fit, type = "l", col = 2, lty = 2)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-44-1.png)<!-- -->
 
