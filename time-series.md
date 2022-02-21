@@ -1369,3 +1369,128 @@ points(MA_fit, type = "l", col = 2, lty = 2)
 
 ![](time-series_files/figure-html/unnamed-chunk-44-1.png)<!-- -->
 
+Excellent work! By fitting an MA model to your Nile data, you're able to capture variation in the data for future prediction. Based on the plot you've generated, does the MA model appear to be a strong fit for the Nile data?
+
+## Simple forecasts from an estimated MA model
+
+Now that you've estimated a MA model with your Nile data, the next step is to do some simple forecasting with your model. As with other types of models, you can use the predict() function to make simple forecasts from your estimated MA model. Recall that the $pred value is the forecast, while the $se value is a standard error for that forecast, each of which is based on the fitted MA model.
+
+Once again, to make predictions for several periods beyond the last observation you can use the n.ahead = h argument in your call to predict(). The forecasts are made recursively from 1 to h-steps ahead from the end of the observed time series. However, note that except for the 1-step forecast, all forecasts from the MA model are equal to the estimated mean (intercept).
+
+In this exercise, you'll use the MA model derived from your Nile data to make simple forecasts about future River Nile flow levels. Your MA model from the previous exercise is available in your environment.
+
+Instructions:
+
+- Use predict() to make a forecast for River Nile flow level in 1971. Store the forecast in predict_MA.
+- Use predict_MA along with $pred[1] to obtain the 1-step forecast.
+- Use another call to predict() to make a forecast from 1971 through 1980. To do so, set the n.ahead argument equal to 10.
+- Run the pre-written code to plot the Nile time series plus the forecast and 95% prediction intervals.
+
+
+```r
+# Make a 1-step forecast based on MA
+predict_MA <-predict(MA)
+
+# Obtain the 1-step forecast using $pred[1]
+predict_MA$pred[1]
+```
+
+```
+## [1] 868.8747
+```
+
+```r
+# Make a 1-step through 10-step forecast based on MA
+predict(MA, n.ahead = 10)
+```
+
+```
+## $pred
+## Time Series:
+## Start = 1971 
+## End = 1980 
+## Frequency = 1 
+##  [1] 868.8747 919.2433 919.2433 919.2433 919.2433 919.2433 919.2433 919.2433
+##  [9] 919.2433 919.2433
+## 
+## $se
+## Time Series:
+## Start = 1971 
+## End = 1980 
+## Frequency = 1 
+##  [1] 152.5508 163.1006 163.1006 163.1006 163.1006 163.1006 163.1006 163.1006
+##  [9] 163.1006 163.1006
+```
+
+```r
+# Plot the Nile series plus the forecast and 95% prediction intervals
+ts.plot(Nile, xlim = c(1871, 1980))
+MA_forecasts <- predict(MA, n.ahead = 10)$pred
+MA_forecast_se <- predict(MA, n.ahead = 10)$se
+points(MA_forecasts, type = "l", col = 2)
+points(MA_forecasts - 2*MA_forecast_se, type = "l", col = 2, lty = 2)
+points(MA_forecasts + 2*MA_forecast_se, type = "l", col = 2, lty = 2)
+```
+
+![](time-series_files/figure-html/unnamed-chunk-45-1.png)<!-- -->
+
+Well done! Note that the MA model can only produce a 1-step forecast. For additional forecasting periods, the predict() command simply extends the original 1-step forecast. This explains the unexpected horizontal lines after 1971.
+
+## AR vs MA models
+
+As you've seen, autoregressive (AR) and simple moving average (MA) are two useful approaches to modeling time series. But how can you determine whether an AR or MA model is more appropriate in practice?
+
+To determine model fit, you can measure the Akaike information criterion (AIC) and Bayesian information criterion (BIC) for each model. While the math underlying the AIC and BIC is beyond the scope of this course, for your purposes the main idea is these these indicators penalize models with more estimated parameters, to avoid overfitting, and smaller values are preferred. All factors being equal, a model that produces a lower AIC or BIC than another model is considered a better fit.
+
+To estimate these indicators, you can use the AIC() and BIC() commands, both of which require a single argument to specify the model in question.
+
+In this exercise, you'll return to the Nile data and the AR and MA models you fitted to this data. These models and their predictions for the 1970s (AR_fit) and (MA_fit) are depicted in the plot on the right.
+
+Instructions:
+
+- As a first step in comparing these models, use cor() to measure the correlation between AR_fit and MA_fit.
+- Use two calls to AIC() to calculate the AIC for AR and MA, respectively.
+- Use two calls to BIC() to calculate the BIC for AR and MA, respectively.
+
+
+```r
+# Find correlation between AR_fit and MA_fit
+#cor(AR_fit, MA_fit)
+
+# Find AIC of AR
+AIC(AR)
+```
+
+```
+## [1] 1428.179
+```
+
+```r
+# Find AIC of MA
+AIC(MA)
+```
+
+```
+## [1] 1295.442
+```
+
+```r
+# Find BIC of AR
+BIC(AR)
+```
+
+```
+## [1] 1437.089
+```
+
+```r
+# Find BIC of MA
+BIC(MA)
+```
+
+```
+## [1] 1303.257
+```
+Well done! Although the predictions from both models are very similar (indeed, they have a correlation coeffiicent of 0.94), both the AIC and BIC indicate that the AR model is a slightly better fit for your Nile data.
+
+
